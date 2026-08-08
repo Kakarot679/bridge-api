@@ -13,3 +13,10 @@ class ConnectionStatus(str, Enum):
     INACTIVE = "inactive"
     DISCONNECTED = "disconnected"
     ERROR = "error"
+
+class HttpMethod(str, Enum):
+    GET = "GET"
+    POST = "POST"
+    PUT = "PUT"
+    PATCH = "PATCH"
+    DELETE = "DELETE"

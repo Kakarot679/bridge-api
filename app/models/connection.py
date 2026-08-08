@@ -13,11 +13,6 @@ if TYPE_CHECKING:
     from app.models.provider import Provider
 
 
-
-
-
-
-
 class Connection(Base):
     __tablename__="connections"
 

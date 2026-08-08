@@ -5,7 +5,12 @@ from app.models.enums import AuthType
 from app.db.base import Base
 from datetime import datetime
 from sqlalchemy.sql import func
-from app.models.connection import Connection
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.models.endpoint import Endpoint
+    from app.models.connection import Connection
 
 
 class Provider(Base):
@@ -31,3 +36,4 @@ class Provider(Base):
         server_default=func.now()
     )
     connections:Mapped[list["Connection"]]=relationship("Connection",back_populates="provider")
+    endpoints:Mapped[list["Endpoint"]]=relationship("Endpoint",back_populates="provider")

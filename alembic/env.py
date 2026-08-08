@@ -2,6 +2,11 @@ from logging.config import fileConfig
 from app.core.config import settings
 from app.db.base import Base 
 from app.models.organization import Organization
+from app.models.user import User
+from app.models.provider import Provider
+from app.models.connection import Connection
+from app.models.endpoint import Endpoint
+
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool

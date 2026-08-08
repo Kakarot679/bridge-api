@@ -1,7 +1,23 @@
+# Python
 venv/
 __pycache__/
+*.py[cod]
 .pytest_cache/
-*.pyc
+
+# Environment
 .env
+
+# IDE
 .idea/
 .vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Coverage
+.coverage
+htmlcov/
+
+# Alembic cache
+alembic/**/__pycache__/

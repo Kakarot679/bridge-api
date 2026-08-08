@@ -3,8 +3,14 @@ from datetime import datetime
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
-from app.models.user import User
-from app.models.connection import Connection
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.models.user import User
+    from app.models.connection import Connection
+
+
 
 
 from app.db.base import Base
@@ -18,3 +24,4 @@ class Organization(Base):
     created_at:Mapped[datetime]=mapped_column(server_default=func.now())
     users:Mapped[list["User"]]=relationship("User",back_populates="organization",cascade="all, delete-orphan")
     connections:Mapped[list["Connection"]]=relationship("Connection",back_populates="organization")
+ 
