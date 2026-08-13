@@ -15,7 +15,7 @@ class Endpoint(Base):
 
     id: Mapped[int] = mapped_column( primary_key=True)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
-    provider_id: Mapped[int] = mapped_column(ForeignKey("providers.id"), nullable=False)
+    provider_id: Mapped[int] = mapped_column(ForeignKey("providers.id",ondelete="CASCADE",name="fk_endpoints_provider_id"),nullable=False)
     method:Mapped[HttpMethod]=mapped_column(Enum(HttpMethod),nullable=False)
     path: Mapped[str] = mapped_column(String(255), nullable=False)
     description: Mapped[str] = mapped_column(String(255), nullable=True)

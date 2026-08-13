@@ -21,3 +21,7 @@ htmlcov/
 
 # Alembic cache
 alembic/**/__pycache__/
+
+
+#claude file 
+CLAUDE.md

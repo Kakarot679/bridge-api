@@ -23,5 +23,5 @@ class Organization(Base):
 
     created_at:Mapped[datetime]=mapped_column(server_default=func.now())
     users:Mapped[list["User"]]=relationship("User",back_populates="organization",cascade="all, delete-orphan")
-    connections:Mapped[list["Connection"]]=relationship("Connection",back_populates="organization")
+    connections:Mapped[list["Connection"]]=relationship("Connection",back_populates="organization",cascade="all, delete-orphan",passive_deletes=True)
  
