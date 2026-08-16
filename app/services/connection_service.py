@@ -7,17 +7,22 @@ from sqlalchemy.exc import IntegrityError
 from app.services.organization_service import OrganizationService
 from app.services.provider_service import ProviderService
 from app.models.enums import AuthType
+from app.models.user import User
 class ConnectionService:
     
     def __init__(self,db:Session):
         self.db=db
 
-    def create_connection(self,connection_data:ConnectionCreate):
+    def create_connection(self,connection_data:ConnectionCreate,current_user:User):
         """Create a new connection."""
         organization_service = OrganizationService(self.db)
         organization_service.get_organization(connection_data.organization_id)
         provider_service = ProviderService(self.db)
         provider=provider_service.get_provider(connection_data.provider_id)
+
+        if connection_data.organization_id != current_user.organization_id:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="organization not found")
+
         
         if provider.auth_type == AuthType.OAUTH2 and not connection_data.refresh_token:
             raise HTTPException(
@@ -40,27 +45,27 @@ class ConnectionService:
 
 
 
-    def get_connection(self,connection_id:int):
+    def get_connection(self,connection_id:int,current_user:User):
         """Return a connection by its ID."""
         statement=select(Connection).where(Connection.id==connection_id)
         result=self.db.execute(statement)
         connection=result.scalar_one_or_none()
-        if connection is None:
+        if connection is None or connection.organization_id!=current_user.organization_id:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="connection not found"
             )
         return connection
 
-    def get_connections(self):
+    def get_connections(self,current_user:User):
         """Return all connections."""
-        statement=select(Connection)
+        statement=select(Connection).where(Connection.organization_id==current_user.organization_id)
         result=self.db.execute(statement)
         return result.scalars().all()
 
-    def update_connection(self,connection_id:int,connection_data:ConnectionUpdate):
+    def update_connection(self,connection_id:int,connection_data:ConnectionUpdate,current_user:User):
         """updates the connection."""
-        connection=self.get_connection(connection_id)
+        connection=self.get_connection(connection_id,current_user)
         update_data=connection_data.model_dump(exclude_unset=True)
 
         for field,value in update_data.items():
@@ -79,9 +84,9 @@ class ConnectionService:
 
         return connection
 
-    def delete_connection(self,connection_id:int):
+    def delete_connection(self,connection_id:int,current_user:User):
         """Delete a connection by its ID."""
-        connection=self.get_connection(connection_id)
+        connection=self.get_connection(connection_id,current_user)
         self.db.delete(connection)
         self.db.commit()
         
