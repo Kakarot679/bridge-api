@@ -1,6 +1,6 @@
-Fastapi
-Uvicorn
-SQLalchemy
+fastapi
+uvicorn
+SQLAlchemy
 pydantic-settings
 Alembic
 python-dotenv

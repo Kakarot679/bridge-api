@@ -18,7 +18,7 @@ class Endpoint(Base):
     provider_id: Mapped[int] = mapped_column(ForeignKey("providers.id",ondelete="CASCADE",name="fk_endpoints_provider_id"),nullable=False)
     method:Mapped[HttpMethod]=mapped_column(Enum(HttpMethod),nullable=False)
     path: Mapped[str] = mapped_column(String(255), nullable=False)
-    description: Mapped[str] = mapped_column(String(255), nullable=True)
+    description: Mapped[str|None] = mapped_column(String(255), nullable=True)
     provider:Mapped["Provider"]=relationship("Provider",back_populates="endpoints")
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
 

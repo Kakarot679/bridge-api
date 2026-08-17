@@ -6,11 +6,7 @@ from app.routers.connection import router as connection_router
 from app.routers.endpoint import router as endpoint_router
 from app.routers.auth import router as auth_router
 from app.routers.fake_provider import router as fake_provider_router
-from app.models.organization import Organization
-from app.models.user import User
-from app.models.provider import Provider
-from app.models.connection import Connection
-from app.models.endpoint import Endpoint
+import app.models
 
 app=FastAPI(title=settings.APP_NAME, version=settings.APP_VERSION, debug=settings.DEBUG)
 app.include_router(provider_router)

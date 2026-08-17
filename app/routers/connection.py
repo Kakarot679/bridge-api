@@ -13,45 +13,43 @@ router=APIRouter(
     tags=["Connections"]
 )
 
+def get_connection_service(db: Session = Depends(get_db)) -> ConnectionService:
+    return ConnectionService(db)
 
 @router.post("/",response_model=ConnectionResponse,status_code=status.HTTP_201_CREATED)
-def create_connection(connection_data:ConnectionCreate,db:Session=Depends(get_db),current_user:User=Depends(get_current_user)):
-    service=ConnectionService(db)
-    create=service.create_connection(connection_data,current_user)
-    return create
+def create_connection(connection_data:ConnectionCreate,service:ConnectionService=Depends(get_connection_service),current_user:User=Depends(get_current_user)):
+
+    return service.create_connection(connection_data,current_user)
+    
 
 @router.get("/{connection_id}",response_model=ConnectionResponse)
-def get_connection(connection_id:int,db:Session=Depends(get_db),current_user:User=Depends(get_current_user)):
-    service=ConnectionService(db)
-    result=service.get_connection(connection_id,current_user)
-    return result
+def get_connection(connection_id:int,service:ConnectionService=Depends(get_connection_service),current_user:User=Depends(get_current_user)):
+    return service.get_connection(connection_id,current_user)
+
 
 @router.get("/",response_model=list[ConnectionResponse])
-def get_connections(db:Session=Depends(get_db),current_user:User=Depends(get_current_user)):
-    service=ConnectionService(db)
-    result=service.get_connections(current_user)
-    return result
+def get_connections(service:ConnectionService=Depends(get_connection_service),current_user:User=Depends(get_current_user)):
+    return service.get_connections(current_user)
 
 
 
 @router.patch("/{connection_id}",response_model=ConnectionResponse)
-def update_connection(connection_id:int,connection_data:ConnectionUpdate,db:Session=Depends(get_db),current_user:User=Depends(get_current_user)):
-    service=ConnectionService(db)
-    update=service.update_connection(connection_id,connection_data,current_user)
-    return update
+def update_connection(connection_id:int,connection_data:ConnectionUpdate,service:ConnectionService=Depends(get_connection_service),current_user:User=Depends(get_current_user)):
+    
+    return service.update_connection(connection_id,connection_data,current_user)
+    
 
 
 @router.delete("/{connection_id}",status_code=status.HTTP_204_NO_CONTENT)
-def delete_connection(connection_id:int,db:Session=Depends(get_db),current_user:User=Depends(get_current_user)):
-    service=ConnectionService(db)
-    service.delete_connection(connection_id,current_user)
-    return
+def delete_connection(connection_id:int,service:ConnectionService=Depends(get_connection_service),current_user:User=Depends(get_current_user)):
+    
+    return service.delete_connection(connection_id,current_user)
+    
 
 @router.post("/{connection_id}/refresh", response_model=ConnectionResponse)
-def refresh_connection(connection_id:int,db:Session=Depends(get_db),current_user:User=Depends(get_current_user)):
-    service=ConnectionService(db)
-    connection=service.refresh_connection(connection_id,current_user)
-    return connection
+def refresh_connection(connection_id:int,service:ConnectionService=Depends(get_connection_service),current_user:User=Depends(get_current_user)):
 
+    return service.refresh_connection(connection_id,current_user)
+  
 
 

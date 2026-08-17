@@ -3,7 +3,7 @@ from app.schemas.connection import ConnectionCreate,ConnectionUpdate
 from sqlalchemy import select
 from app.models.connection import Connection
 from  fastapi import status,HTTPException
-from sqlalchemy.exc import IntegrityError,OperationalError
+from sqlalchemy.exc import IntegrityError
 from app.services.organization_service import OrganizationService
 from app.services.provider_service import ProviderService
 from app.models.enums import AuthType
