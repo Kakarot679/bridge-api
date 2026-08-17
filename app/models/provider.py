@@ -35,5 +35,7 @@ class Provider(Base):
     created_at: Mapped[datetime] = mapped_column(
         server_default=func.now()
     )
+    token_url: Mapped[str] = mapped_column(String(255), nullable=False)
+
     connections:Mapped[list["Connection"]]=relationship("Connection",back_populates="provider",cascade="all, delete-orphan",passive_deletes=True)
     endpoints:Mapped[list["Endpoint"]]=relationship("Endpoint",back_populates="provider",cascade="all, delete-orphan",passive_deletes=True)

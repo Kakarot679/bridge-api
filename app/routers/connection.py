@@ -47,6 +47,11 @@ def delete_connection(connection_id:int,db:Session=Depends(get_db),current_user:
     service.delete_connection(connection_id,current_user)
     return
 
+@router.post("/{connection_id}/refresh", response_model=ConnectionResponse)
+def refresh_connection(connection_id:int,db:Session=Depends(get_db),current_user:User=Depends(get_current_user)):
+    service=ConnectionService(db)
+    connection=service.refresh_connection(connection_id,current_user)
+    return connection
 
 
 

@@ -3,11 +3,14 @@ from app.schemas.connection import ConnectionCreate,ConnectionUpdate
 from sqlalchemy import select
 from app.models.connection import Connection
 from  fastapi import status,HTTPException
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError,OperationalError
 from app.services.organization_service import OrganizationService
 from app.services.provider_service import ProviderService
 from app.models.enums import AuthType
 from app.models.user import User
+from datetime import datetime,timedelta,timezone
+import httpx
+
 class ConnectionService:
     
     def __init__(self,db:Session):
@@ -89,7 +92,29 @@ class ConnectionService:
         connection=self.get_connection(connection_id,current_user)
         self.db.delete(connection)
         self.db.commit()
+
+    def refresh_connection(self,connection_id:int,current_user:User) -> Connection:
+        connection=self.get_connection(connection_id,current_user)
+        provider=connection.provider
+
+        try:
+            response=httpx.post(provider.token_url,
+                            data={"grant_type": "refresh_token", "refresh_token": connection.refresh_token}
+        )
+
+            response.raise_for_status()
+        except httpx.HTTPError:
+            raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="Failed to refresh token with provider")
         
+        token_data=response.json()
+        connection.access_token=token_data["access_token"]
+        connection.expires_at=datetime.now(timezone.utc)+timedelta(seconds=token_data["expires_in"])
+
+        self.db.commit()
+        self.db.refresh(connection)
+        return connection
+
 
 
         
